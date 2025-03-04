@@ -2,8 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import json
 
-def fetch_airdrops():
-    url = "https://airdrops.io/"  # You can add other sources
+def fetch_airdrops(filter_network=None, min_reward=0):
+    url = "https://airdrops.io/"
     headers = {"User-Agent": "Mozilla/5.0"}
     response = requests.get(url, headers=headers)
     
@@ -20,6 +20,15 @@ def fetch_airdrops():
         network = card.select_one(".network").text.strip() if card.select_one(".network") else "Unknown"
         link = card.select_one("a")["href"]
         
+        # Convert reward to number if possible
+        reward_value = float(reward.replace("$", "").replace(",", "")) if reward.replace("$", "").replace(",", "").replace(".", "").isdigit() else 0
+        
+        # Apply filters
+        if filter_network and filter_network.lower() not in network.lower():
+            continue
+        if reward_value < min_reward:
+            continue
+        
         airdrops.append({
             "title": title,
             "reward": reward,
@@ -30,5 +39,7 @@ def fetch_airdrops():
     return airdrops
 
 if __name__ == "__main__":
-    airdrop_data = fetch_airdrops()
+    network_filter = "Ethereum"  # Change to None to disable filtering
+    min_reward = 10  # Change to 0 to disable reward filtering
+    airdrop_data = fetch_airdrops(filter_network=network_filter, min_reward=min_reward)
     print(json.dumps(airdrop_data, indent=4, ensure_ascii=False))
