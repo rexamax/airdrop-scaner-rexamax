@@ -1,0 +1,39 @@
+name: Python CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  syntax-check:
+    name: Python syntax check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check Python syntax
+        run: |
+          set -e
+          pyfiles=$(git ls-files '*.py' || true)
+          if [ -z "$pyfiles" ]; then
+            echo "No Python files found."
+          else
+            python -m py_compile $pyfiles
+          fi
+
+  lint:
+    name: Ruff lint (non-blocking)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install ruff
+        run: pip install ruff
+      - name: Run ruff
+        run: ruff check --output-format=github .
+      # Чтобы статус CI оставался зелёным даже при найденных замечаниях:
+      continue-on-error: true
