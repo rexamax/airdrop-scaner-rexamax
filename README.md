@@ -33,3 +33,10 @@ min_reward = 10  # Set to 0 to disable reward filtering
 ### Contributions & Feedback
 Open to feedback and contributions! 🚀
 
+## Roadmap
+
+- [ ] Add support for Solana network (#1)
+- [ ] Create installation guide for Windows and Linux (#2)
+- [ ] Add transaction logging to file (#3)
+
+
