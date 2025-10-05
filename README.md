@@ -39,4 +39,3 @@ Open to feedback and contributions! 🚀
 - [ ] Create installation guide for Windows and Linux (#2)
 - [ ] Add transaction logging to file (#3)
 
-
