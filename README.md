@@ -1,3 +1,5 @@
+![CI](https://github.com/rexamax/airdrop-scaner-rexamax/actions/workflows/python-ci.yml/badge.svg)
+
 # RexaMax Airdrop Scanner
 
 🚀 **RexaMax Airdrop Scanner** is a Python-based tool that scrapes airdrop data from websites and filters them based on network and reward value.
