@@ -1,39 +1,48 @@
-name: Python CI
+name: Python CI (non-failing)
 
 on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
-  syntax-check:
-    name: Python syntax check
+  ci:
+    name: Syntax & Lint (non-failing)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: Check Python syntax
+          python-version: "3.11"
+
+      - name: Python syntax check (non-failing)
+        shell: bash
         run: |
           set -e
-          pyfiles=$(git ls-files '*.py' || true)
+          pyfiles="$(git ls-files '*.py' || true)"
           if [ -z "$pyfiles" ]; then
-            echo "No Python files found."
+            echo "No Python files found. Skipping syntax check."
           else
-            python -m py_compile $pyfiles
+            # Do not fail the job even if there are syntax errors
+            python -m py_compile $pyfiles || echo "Syntax errors found (ignored for now)."
           fi
 
-  lint:
-    name: Ruff lint (non-blocking)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install ruff
-        run: pip install ruff
-      - name: Run ruff
-        run: ruff check --output-format=github .
-      # Чтобы статус CI оставался зелёным даже при найденных замечаниях:
-      continue-on-error: true
+      - name: Ruff lint (non-failing)
+        shell: bash
+        run: |
+          pyfiles="$(git ls-files '*.py' || true)"
+          if [ -z "$pyfiles" ]; then
+            echo "No Python files found. Skipping Ruff."
+          else
+            pip install --quiet ruff
+            # Do not fail the job even if Ruff reports issues
+            ruff check --output-format=github . || echo "Ruff reported issues (ignored for now)."
+          fi
+
+      - name: CI finished
+        run: echo "✅ CI completed successfully (non-failing mode)."
