@@ -1,4 +1,6 @@
 ![CI](https://github.com/rexamax/airdrop-scaner-rexamax/actions/workflows/python-ci.yml/badge.svg)
+![Release](https://img.shields.io/github/v/release/rexamax/airdrop-scaner-rexamax)
+
 
 # RexaMax Airdrop Scanner
 
